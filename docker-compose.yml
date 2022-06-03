@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  php:
+    build:
+      context: ./docker
+      dockerfile: ./php/Dockerfile
+    container_name: php-micro-php-container
+    volumes:
+      - ./:/var/www/html/:cached # Location of the project for php-fpm. Note this should be the same for NGINX.*doc
+    networks:
+      - php-micro-net
+
+  nginx:
+    build:
+      context: ./docker
+      dockerfile: ./nginx/Dockerfile
+    container_name: php-micro-nginx-container
+    volumes:
+      - ./:/var/www/html/:cached
+    ports:
+      - "10320:80" # Ports that are exposed, you can connect to port 10302 to port 80 of the container.
+    networks:
+      - php-micro-net
+    depends_on:
+      - database
+      - php
+
+  database:
+    image: mariadb:10.6.7
+    container_name: php-micro-db-container
+    ports:
+      - "3366:3306" # outside:inside docker container from-within
+    # restart: always
+    environment:
+      - MYSQL_DATABASE=test
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - persistent:/var/lib/mysql
+    networks:
+    - php-micro-net
+
+  node-service:
+    container_name: php-micro-node-container
+    image: node:erbium
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - php-micro-net
+
+networks:
+  php-micro-net:
+
+volumes:
+  persistent:
