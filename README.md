@@ -2,6 +2,9 @@
 
 This is an simple MVC framework written in PHP language.
 
+## Features
+- Extensive error handling using whoops framework.
+
 ## Installed Software in Docker Container
 PHP 8 \
 Mariadb 10.2.29 \
