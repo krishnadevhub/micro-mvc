@@ -10,6 +10,7 @@ require dirname(__DIR__).'/vendor/autoload.php';
 try {
     Application::init();
 } catch (Exception $exception) {
+    dump($exception);
     (new ErrorPageController())->errorAction();
 
 }

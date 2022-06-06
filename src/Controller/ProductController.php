@@ -3,18 +3,17 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\Routing\RouteCollection;
-
 class ProductController extends AbstractController
 {
-    public function showAction(int $id)
+    public function showAction(int $id, int $sid)
     {
         self::render('product.html.twig', [
             'product' => [
+                'itemNo' => $id,
+                'sid' => $sid,
                 'title' => 'Product Tile',
                 'description' => 'Descc',
             ]
         ]);
     }
-
 }

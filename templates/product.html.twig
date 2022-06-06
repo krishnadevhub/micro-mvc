@@ -1,9 +1,11 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <h1>My Product:</h1>
+    <h1>My Product:</h1><br />
     <ul>
-        <li>{{ product.title }}</li>
-        <li>{{ product.description }}</li>
+        <li>Item No#: {{ product.itemNo}}</li>
+        <li>SerialNo#: {{product.sid}}</li>
+        <li>Title: {{ product.title }}</li>
+        <li>Description: {{ product.description }}</li>
     </ul>
 {% endblock %}

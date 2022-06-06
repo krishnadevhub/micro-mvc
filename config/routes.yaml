@@ -1,0 +1,13 @@
+
+homepage:
+    path: /
+    defaults: { _controller: 'App\Controller\HomeController::indexAction' }
+
+product:
+    path: /product/id/{id}/sid/{sid}
+    defaults: { _controller: 'App\Controller\ProductController::showAction' }
+    requirements: { id: '[0-9]+', sid: '[0-9]+' }
+
+pdo-gen:
+    path: /pdo-gen
+    defaults: { _controller: 'App\Controller\PdoEntityGeneratorController::indexAction'}
