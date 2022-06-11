@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Service\AppLogger;
 use Exception;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -14,7 +16,18 @@ use Symfony\Component\Routing\RequestContext;
 
 class Router
 {
-    public function __invoke(): void
+
+    /*public function __construct(
+        private Container $container
+    )
+    {  }*/
+
+    public function __construct(
+        private ContainerBuilder $containerBuilder
+    )
+    {  }
+
+    public function resolve(): void
     {
         $context = new RequestContext();
         $context->fromRequest(Request::createFromGlobals());
@@ -31,20 +44,24 @@ class Router
             $matcher = $router->match($context->getPathInfo());
 
             $controller = explode('::', $matcher['_controller']);
-            $classInstance = new $controller[0]();
 
-            $params = array_merge((array) array_slice($matcher, 2));
+            if (class_exists($controller[0])) {
+                $classInstance = $this->containerBuilder->get($controller[0]);
 
-            call_user_func_array(
-                [
-                    $classInstance,
-                    $controller[1],
-                ],
-                $params
-            );
+                if (method_exists($classInstance, $controller[1])) {
+                    $params = array_merge((array) array_slice($matcher, 2));
 
+                    call_user_func_array(
+                        [
+                            $classInstance,
+                            $controller[1],
+                        ],
+                        $params
+                    );
+                }
+            }
         } catch (MethodNotAllowedException|ResourceNotFoundException|Exception $e) {
-           // TODO: log error;
+            (new AppLogger())->getLogger()->error($e);
             throw $e;
         }
     }

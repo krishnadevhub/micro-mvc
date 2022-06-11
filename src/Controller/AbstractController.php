@@ -7,11 +7,16 @@ namespace App\Controller;
 use App\Core\Application;
 use App\Core\Twig\AssetExtension;
 use App\Core\Twig\RoutingExtension;
+use App\Service\AppLogger;
+use Exception;
+use Monolog\Logger;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Router;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -46,7 +51,7 @@ abstract class AbstractController
             $context->fromRequest(Request::createFromGlobals());
 
             $fileLocator = new FileLocator([CONFIG_PATH]);
-            $router = new \Symfony\Component\Routing\Router(
+            $router = new Router(
                 new YamlFileLoader($fileLocator),
                 'routes.yaml',
                 ['cache_dir' => CACHE_PATH],
@@ -60,5 +65,18 @@ abstract class AbstractController
         }
 
         echo $twig->render($template, $args);
+    }
+
+    /**
+     * Returns Monolog Logger instance.
+     *
+     * @return Logger
+     * @throws Exception
+     */
+    public function getAppLogger(): Logger
+    {
+        $appLogger = (new Application())->getContainer()->get('app.logger');
+
+        return $appLogger->getLogger();
     }
 }

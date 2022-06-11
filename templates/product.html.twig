@@ -8,4 +8,8 @@
         <li>Title: {{ product.title }}</li>
         <li>Description: {{ product.description }}</li>
     </ul>
+    {% if isInvoiceProcessed == true %}
+        <br>
+        <p>Customer invoice has bees processed.</p>
+    {% endif %}
 {% endblock %}

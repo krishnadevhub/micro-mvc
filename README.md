@@ -4,6 +4,8 @@ This is an simple MVC framework written in PHP language.
 
 ## Features
 - Extensive error handling using whoops framework.
+- Twig templating language.
+- Enable Dependency Injection using Symfony Dependency Injection component.
 
 ## Installed Software in Docker Container
 PHP 8 \
@@ -17,6 +19,7 @@ Symfony Routing \
 Symfony HttpFoundation \
 Symfony dotenv \
 Phinx 
+Monolog
 
 ## Dev Tools
 PHPStan \

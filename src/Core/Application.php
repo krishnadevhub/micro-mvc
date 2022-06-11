@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Service\AppLogger;
 use Exception;
 use RuntimeException;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Dotenv\Dotenv;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -42,10 +46,16 @@ class Application
         }
 
         try {
-            (new Router)();
-        } catch (Exception $e) {
-            // TODO: log error;
-            throw $e;
+            /** https://symfony.com/doc/current/components/dependency_injection.html */
+            $container = new ContainerBuilder();
+            $loader = new YamlFileLoader($container, new FileLocator(CONFIG_PATH));
+            $loader->load('services.yaml');
+            $container->compile();
+
+            (new Router($container))->resolve();
+        } catch (Exception $ex) {
+            (new AppLogger())->getLogger()->error($ex);
+            throw $ex;
         }
     }
 
@@ -127,6 +137,6 @@ class Application
         defined('ASSET_PATH') || define('ASSET_PATH', APP_ROOT . DIRECTORY_SEPARATOR . PUBLIC_PATH . DIRECTORY_SEPARATOR .'assets');
         defined('TEMPLATE_PATH') or define('TEMPLATE_PATH', APP_ROOT. DIRECTORY_SEPARATOR .'templates');
         defined('CACHE_PATH') or define('CACHE_PATH',APP_ROOT . DIRECTORY_SEPARATOR .'var'. DIRECTORY_SEPARATOR. 'cache');
-        defined('LOG_PATH') or define('LOG_PATH', APP_ROOT . DIRECTORY_SEPARATOR .'log');
+        defined('LOG_PATH') or define('LOG_PATH', APP_ROOT . DIRECTORY_SEPARATOR .'var'. DIRECTORY_SEPARATOR .'log');
     }
 }
