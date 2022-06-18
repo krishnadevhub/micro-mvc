@@ -7,7 +7,7 @@ namespace App\Core;
 use App\Service\AppLogger;
 use Exception;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -17,13 +17,8 @@ use Symfony\Component\Routing\RequestContext;
 class Router
 {
 
-    /*public function __construct(
-        private Container $container
-    )
-    {  }*/
-
     public function __construct(
-        private ContainerBuilder $containerBuilder
+        private Container $containerBuilder
     )
     {  }
 

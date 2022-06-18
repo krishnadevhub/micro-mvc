@@ -2,7 +2,7 @@
 
 namespace App\Core\Twig;
 
-use App\Core\Application;
+use App\Application;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 

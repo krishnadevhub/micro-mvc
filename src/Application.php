@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Core;
+namespace App;
 
+use App\Core\AppContainer;
+use App\Core\Router;
 use App\Service\AppLogger;
 use Exception;
 use RuntimeException;
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\Dotenv\Dotenv;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Run;
@@ -29,7 +28,7 @@ class Application
     {
         self::loadPathConstants();
         $dotenv = new Dotenv();
-        $dotenv->load(__DIR__.'/../../.env');
+        $dotenv->load(__DIR__.'/../.env');
 
         self::$environment = $_ENV['APP_ENV'];
         self::isValidEnvironment();
@@ -46,13 +45,8 @@ class Application
         }
 
         try {
-            /** https://symfony.com/doc/current/components/dependency_injection.html */
-            $container = new ContainerBuilder();
-            $loader = new YamlFileLoader($container, new FileLocator(CONFIG_PATH));
-            $loader->load('services.yaml');
-            $container->compile();
-
-            (new Router($container))->resolve();
+            $container = new AppContainer();
+            (new Router($container->getContainer()))->resolve();
         } catch (Exception $ex) {
             (new AppLogger())->getLogger()->error($ex);
             throw $ex;

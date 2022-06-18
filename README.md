@@ -5,7 +5,7 @@ This is an simple MVC framework written in PHP language.
 ## Features
 - Extensive error handling using whoops framework.
 - Twig templating language.
-- Enable Dependency Injection using Symfony Dependency Injection component.
+- Enabled Dependency Injection using Symfony Dependency Injection component.
 
 ## Installed Software in Docker Container
 PHP 8 \
@@ -24,9 +24,6 @@ Monolog
 ## Dev Tools
 PHPStan \
 Symfony varDumper 
-
-## Downloaded Packages using npm
-Bootstrap 
 
 ## Setup
 To get it working, follow these steps:
@@ -47,13 +44,7 @@ Create a `.env` file and copy the content from `.env.dist` file.
 **Download Composer dependencies**
 
 ```
-$ docker exec -it cauldron-auth-php-container composer install
-```
-
-**Create database and tables**
-
-```
-docker exec -it cauldron-auth-php-container symfony console doctrine:database:create
+$ docker exec -it micro-mvc-php-container composer install
 ```
 
 **Run the site**

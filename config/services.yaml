@@ -16,4 +16,5 @@ services:
             - '../src/Core'
             - '../src/Exception'
             - '../src/Utils'
+            - '../src/Application.php'
         public: true
