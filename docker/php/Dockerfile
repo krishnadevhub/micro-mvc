@@ -18,11 +18,6 @@ RUN apt update \
     && docker-php-ext-configure zip \
     && docker-php-ext-install zip
 
-#PHP extensions, available extensions https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions
-#ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
-#RUN chmod +x /usr/local/bin/install-php-extensions && \
-#    install-php-extensions gd xdebug pdo_mysql pdo_pgsql mysqli
-
 COPY php/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
