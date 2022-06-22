@@ -8,10 +8,10 @@
         "default_environment": "development",
         "production": {
             "adapter": "mysql",
-            "host": "database",
+            "host": "localhost",
             "name": "test",
             "user": "root",
-            "pass": "root",
+            "pass": "",
             "port": 3306,
             "charset": "utf8"
         },
