@@ -3,16 +3,21 @@ declare(strict_types=1);
 
 use Phinx\Migration\AbstractMigration;
 
-final class ProductsTable extends AbstractMigration
+final class UserTable extends AbstractMigration
 {
     /**
      * Change Method.
+     *
+     * Write your reversible migrations using this method.
+     *
+     * More information on writing migrations is available here:
+     * https://book.cakephp.org/phinx/0/en/migrations.html#the-change-method
+     *
+     * Remember to call "create()" or "update()" and NOT "save()" when working
+     * with the Table class.
      */
     public function change(): void
     {
-        $table = $this->table('products');
-        $table->create();
-
         $this->execute(
             "CREATE TABLE `user` (
                 `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -23,16 +28,5 @@ final class ProductsTable extends AbstractMigration
                 UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`)
             ) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
         );
-
-        $this->execute(
-            "CREATE TABLE `tag` (
-              `id` int(11) NOT NULL AUTO_INCREMENT,
-              `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-              `created_at` datetime NOT NULL,
-              `updated_at` datetime NOT NULL,
-              PRIMARY KEY (`id`)
-            ) ENGINE=InnoDB AUTO_INCREMENT=201 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;"
-        );
-
     }
 }

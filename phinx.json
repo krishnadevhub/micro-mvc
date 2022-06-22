@@ -8,17 +8,17 @@
         "default_environment": "development",
         "production": {
             "adapter": "mysql",
-            "host": "127.0.0.1",
-            "name": "micromvc",
+            "host": "database",
+            "name": "test",
             "user": "root",
             "pass": "root",
-            "port": 3366,
+            "port": 3306,
             "charset": "utf8"
         },
         "development": {
             "adapter": "mysql",
             "host": "database",
-            "name": "micromvc",
+            "name": "test",
             "user": "root",
             "pass": "root",
             "port": 3306,
@@ -30,7 +30,7 @@
             "name": "testing_db",
             "user": "root",
             "pass": "",
-            "port": 3306,
+            "port": 3366,
             "charset": "utf8"
         }
     },
