@@ -1,15 +1,22 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <h1>My Product:</h1><br />
-    <ul>
-        <li>Item No#: {{ product.itemNo}}</li>
-        <li>SerialNo#: {{product.sid}}</li>
-        <li>Title: {{ product.title }}</li>
-        <li>Description: {{ product.description }}</li>
-    </ul>
-    {% if isInvoiceProcessed == true %}
-        <br>
-        <p>Customer invoice has bees processed.</p>
-    {% endif %}
+    <div class="container main-content">
+        <div class="row">
+            <h1 class="mb-4">Products</h1>
+            <div class="col">
+                <ul>
+                    <li>Item No#: {{ product.itemNo}}</li>
+                    <li>SerialNo#: {{product.sid}}</li>
+                    <li>Title: {{ product.title }}</li>
+                    <li>Description: {{ product.description }}</li>
+                </ul>
+                {% if isInvoiceProcessed == true %}
+                    <br>
+                    <p>Customer invoice has been processed.</p>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
 {% endblock %}

@@ -1,4 +1,10 @@
-body {
-    color: #0000FF;
-    background-color: aliceblue;
+.main-content {
+    margin: 100px 10px 20px 20px !important;
+}
+
+#footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: rgba(0, 0, 0, 0.05);
 }
