@@ -21,10 +21,6 @@ Symfony dotenv \
 Phinx 
 Monolog
 
-## Dev Tools
-PHPStan \
-Symfony varDumper 
-
 ## Setup
 To get it working, follow these steps:
 
