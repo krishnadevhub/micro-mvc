@@ -1,4 +1,4 @@
-# Simple MVC PHP Framework
+# Simple PHP MVC Framework
 
 This is an simple MVC framework written in PHP language.
 
