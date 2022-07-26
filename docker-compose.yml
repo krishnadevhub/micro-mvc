@@ -40,15 +40,6 @@ services:
     networks:
     - micro-mvc-net
 
-  node-service:
-    container_name: micro-mvc-node-container
-    image: node:erbium
-    volumes:
-      - .:/var/www/html
-    working_dir: /var/www/html
-    networks:
-      - micro-mvc-net
-
 networks:
   micro-mvc-net:
 

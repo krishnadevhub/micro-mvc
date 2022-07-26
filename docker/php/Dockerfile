@@ -30,6 +30,11 @@ RUN pecl install xdebug && docker-php-ext-enable xdebug
 
 RUN echo 'alias composer="XDEBUG_MODE=off composer"' >> ~/.bashrc
 
+# Install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install --global yarn
+
 # create document root, fix permissions for www-data user and change owner to www-data
 RUN mkdir -p $APP_HOME/public && \
     mkdir -p /home/$USERNAME && chown $USERNAME:$USERNAME /home/$USERNAME \

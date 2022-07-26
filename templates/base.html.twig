@@ -19,16 +19,14 @@
 </head>
 
 <body>
-
-
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a href="#" class="navbar-brand">&nbsp;</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+    <a href="#" class="navbar-brand"> </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
             aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div id="navbarCollapse" class="navbar-collapse collapse">
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav mr-auto">
             <li class="nav-item"><a href="/" class="nav-link">Home</a></li>
             <li class="nav-item">
                 <a class="nav-link" href="{{ path('product', {'id': 1, 'sid': 13}) }}">Products</a>
@@ -40,8 +38,6 @@
         </ul>
     </div>
 </nav>
-
-
 
 <!-- Begin page content -->
 {% block body %}{% endblock %}
