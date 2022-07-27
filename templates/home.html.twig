@@ -1,10 +1,17 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
-    <div class="container main-content">
-        <div class="row">
-            <h1 class="mb-4">Home</h1>
-            <p class="lead"><i class="fa-solid fa-person-digging"></i> This website is under construction.</p>
-        </div>
+    <div class="container">
+        <header class="mt-4 mb-4 p-5 bg-light rounded">
+            <h1 class="display-3">Micro MVC Framework </h1>
+            <p class="lead">This is an simple MVC framework written in PHP language.</p>
+            <h4>Features</h4>
+            <ul>
+                <li>Extensive error handling using whoops framework.</li>
+                <li>Twig templating language.</li>
+                <li>Enabled Dependency Injection using Symfony Dependency Injection component.</li>
+            </ul>
+        </header>
     </div>
+
 {% endblock %}

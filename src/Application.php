@@ -91,7 +91,7 @@ class Application
      *
      * @return bool
      */
-    public function isProduction(): bool
+    public static function isProduction(): bool
     {
         if (in_array(self::$environment, ['prod', 'production'])) {
             return true;
