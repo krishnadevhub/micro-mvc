@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Service\AppLogger;
-use Exception;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
@@ -16,11 +16,9 @@ use Symfony\Component\Routing\RequestContext;
 
 class Router
 {
-
     public function __construct(
-        private Container $containerBuilder
-    )
-    {  }
+        private readonly Container $container
+    ) { }
 
     public function resolve(): void
     {
@@ -38,26 +36,44 @@ class Router
 
             $matcher = $router->match($context->getPathInfo());
 
-            $controller = explode('::', $matcher['_controller']);
+            $controllerParts = explode('::', $matcher['_controller']);
 
-            if (class_exists($controller[0])) {
-                $classInstance = $this->containerBuilder->get($controller[0]);
-
-                if (method_exists($classInstance, $controller[1])) {
-                    $params = array_merge((array) array_slice($matcher, 2));
-
-                    call_user_func_array(
-                        [
-                            $classInstance,
-                            $controller[1],
-                        ],
-                        $params
-                    );
-                }
+            if (count($controllerParts) !== 2) {
+                throw new \RuntimeException(
+                    sprintf('Invalid controller format "%s". Expected "Class::method".', $matcher['_controller'])
+                );
             }
-        } catch (MethodNotAllowedException|ResourceNotFoundException|Exception $e) {
-            (new AppLogger())->getLogger()->error($e);
-            throw $e;
+
+            [$className, $methodName] = $controllerParts;
+
+            if (!class_exists($className)) {
+                throw new ResourceNotFoundException(
+                    sprintf('Controller class "%s" does not exist.', $className)
+                );
+            }
+
+            $classInstance = $this->container->get($className);
+
+            if (!method_exists($classInstance, $methodName)) {
+                throw new ResourceNotFoundException(
+                    sprintf('Method "%s" not found on controller "%s".', $methodName, $className)
+                );
+            }
+
+            $params = array_filter(
+                $matcher,
+                fn(string $key) => !str_starts_with($key, '_'),
+                ARRAY_FILTER_USE_KEY
+            );
+
+            call_user_func_array([$classInstance, $methodName], $params);
+
+        } catch (MethodNotAllowedException $e) {
+            (new AppLogger())->getLogger()->error($e->getMessage());
+            (new Response('Method Not Allowed', Response::HTTP_METHOD_NOT_ALLOWED))->send();
+        } catch (ResourceNotFoundException $e) {
+            (new AppLogger())->getLogger()->error($e->getMessage());
+            (new Response('Not Found', Response::HTTP_NOT_FOUND))->send();
         }
     }
 }

@@ -8,14 +8,14 @@ use App\Service\TestInvoiceService;
 class ProductController extends AbstractController
 {
     public function __construct(
-        private TestInvoiceService $invoiceService
+        private readonly TestInvoiceService $invoiceService
     ) { }
 
-    public function showAction(int $id, int $sid)
+    public function showAction(int $id, int $sid): void
     {
         $isInvoiceProcessed = $this->invoiceService->process([], 25);
 
-        self::render('product.html.twig', [
+        $this->render('product.html.twig', [
             'product' => [
                 'itemNo' => $id,
                 'sid' => $sid,

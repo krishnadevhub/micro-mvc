@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace App\Service;
 
@@ -9,9 +9,9 @@ use Exception;
 class TestInvoiceService
 {
     public function __construct(
-        protected TestSalesTaxService $salesTaxService,
-        protected TestEmailService $emailService,
-        protected AppLogger $logger,
+        protected readonly TestSalesTaxService $salesTaxService,
+        protected readonly TestEmailService $emailService,
+        protected readonly AppLogger $logger,
     ) { }
 
     /**

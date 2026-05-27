@@ -12,10 +12,3 @@ try {
 } catch (Exception $ex) {
     (new ErrorPageController())->errorAction();
 }
-
-
-
-
-
-
-

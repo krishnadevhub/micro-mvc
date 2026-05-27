@@ -2,4 +2,11 @@
 /.env
 /var/
 
+###> phpstorm ###
 /.idea/
+###> phpstorm ###
+
+###> visualstudio ###
+.vscode/
+.vs/
+###> visualstudio ###

@@ -13,11 +13,11 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 /**
  * Cache Services configuration resources.
- * https://symfony.com/doc/6.0/components/dependency_injection/compilation.html
+ * https://symfony.com/doc/current/components/dependency_injection/compilation.html
  */
 class AppContainer
 {
-    private Container $container;
+    private readonly Container $container;
 
     public function __construct()
     {
@@ -25,16 +25,16 @@ class AppContainer
         $containerConfigCache = new ConfigCache($file, Application::$isDebug);
 
         if (!$containerConfigCache->isFresh()) {
-            $this->container = new ContainerBuilder();
-            $loader = new YamlFileLoader($this->container, new FileLocator(CONFIG_PATH));
+            $containerBuilder = new ContainerBuilder();
+            $loader = new YamlFileLoader($containerBuilder, new FileLocator(CONFIG_PATH));
             $loader->load('services.yaml');
 
-            $this->container->compile();
+            $containerBuilder->compile();
 
-            $dumper = new PhpDumper($this->container);
+            $dumper = new PhpDumper($containerBuilder);
             $containerConfigCache->write(
                 $dumper->dump(['class' => 'AppCachedContainer']),
-                $this->container->getResources()
+                $containerBuilder->getResources()
             );
         }
 
@@ -42,9 +42,6 @@ class AppContainer
         $this->container = new \AppCachedContainer();
     }
 
-    /**
-     * @return ContainerBuilder
-     */
     public function getContainer(): Container
     {
         return $this->container;

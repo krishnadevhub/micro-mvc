@@ -1,46 +1,59 @@
-FROM php:8.0-fpm
+FROM php:8.4-fpm
 
 LABEL maintainer="Krishna"
 
-ENV APP_HOME /var/www/html
 ARG UID=1000
 ARG GID=1000
-ENV USERNAME=www-data
 ARG TIMEZONE=Asia/Kuala_Lumpur
 
+ENV APP_HOME=/var/www/html
+ENV USERNAME=www-data
+
+# Install system dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        zlib1g-dev \
+        g++ \
+        git \
+        libicu-dev \
+        libzip-dev \
+        zip \
+        curl \
+        wget \
+        nano \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions (opcache is bundled in php:8.4-fpm)
+RUN docker-php-ext-install intl pdo pdo_mysql zip \
+    && pecl install apcu xdebug \
+    && docker-php-ext-enable apcu xdebug
+
+# Copy PHP configuration
 COPY php/php.ini /usr/local/etc/php/conf.d/
-
-RUN apt update \
-    && apt install -y zlib1g-dev g++ git libicu-dev zip libzip-dev zip curl wget zsh fonts-powerline locales nano \
-    && docker-php-ext-install intl opcache pdo pdo_mysql \
-    && pecl install apcu \
-    && docker-php-ext-enable apcu \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install zip
-
 COPY php/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 # Set timezone
-RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} > /etc/timezone
-RUN printf '[PHP]\ndate.timezone = "%s"\n', ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini
+RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} > /etc/timezone \
+    && printf '[PHP]\ndate.timezone = "%s"\n' ${TIMEZONE} > /usr/local/etc/php/conf.d/tzone.ini
 
-RUN pecl install xdebug && docker-php-ext-enable xdebug
-
+# Alias composer to disable xdebug overhead
 RUN echo 'alias composer="XDEBUG_MODE=off composer"' >> ~/.bashrc
 
-# Install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
-RUN apt-get install -y nodejs
-RUN npm install --global yarn
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs \
+    && npm install --global yarn \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# create document root, fix permissions for www-data user and change owner to www-data
-RUN mkdir -p $APP_HOME/public && \
-    mkdir -p /home/$USERNAME && chown $USERNAME:$USERNAME /home/$USERNAME \
-    && usermod -u $UID $USERNAME -d /home/$USERNAME \
-    && groupmod -g $GID $USERNAME \
-    && chown -R ${USERNAME}:${USERNAME} $APP_HOME
+# Configure www-data user and set up document root
+RUN mkdir -p ${APP_HOME}/public /home/${USERNAME} \
+    && usermod -u ${UID} ${USERNAME} -d /home/${USERNAME} \
+    && groupmod -g ${GID} ${USERNAME} \
+    && chown -R ${USERNAME}:${USERNAME} ${APP_HOME} /home/${USERNAME}
 
-# set working directory
-WORKDIR $APP_HOME
+WORKDIR ${APP_HOME}

@@ -5,8 +5,8 @@ namespace App\Controller;
 
 class PdoEntityGeneratorController extends AbstractController
 {
-    public function indexAction()
+    public function indexAction(): void
     {
-        self::render('pdo_gen.html.twig');
+        $this->render('pdo_gen.html.twig');
     }
 }

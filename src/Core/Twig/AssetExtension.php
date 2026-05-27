@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Core\Twig;
 
 use App\Application;
@@ -8,13 +10,11 @@ use Twig\TwigFunction;
 
 final class AssetExtension extends AbstractExtension
 {
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('asset', [$this, 'getAssetUrl']),
+            new TwigFunction('asset', $this->getAssetUrl(...)),
         ];
     }
 

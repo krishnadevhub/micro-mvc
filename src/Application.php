@@ -79,11 +79,7 @@ class Application
      */
     public static function isDevelopment(): bool
     {
-        if (in_array(self::$environment, ['dev', 'development'])) {
-            return true;
-        }
-
-        return false;
+        return in_array(self::$environment, ['dev', 'development']);
     }
 
     /**
@@ -93,11 +89,7 @@ class Application
      */
     public static function isProduction(): bool
     {
-        if (in_array(self::$environment, ['prod', 'production'])) {
-            return true;
-        }
-
-        return false;
+        return in_array(self::$environment, ['prod', 'production']);
     }
 
     /**
