@@ -1,0 +1,8 @@
+/* Bootstrap */
+@import '../css/bootstrap/bootstrap.min.css';
+
+/* FontAwesome */
+@import '../fontawesome/css/all.css';
+
+/* Application styles */
+@import '../css/common/style.css';

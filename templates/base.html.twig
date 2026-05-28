@@ -7,11 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="{{asset('asset/images/common/favicon.png')}}">
+    <link rel="shortcut icon" href="{{asset('build/images/favicon.png')}}">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" type="text/css" href="{{ asset('asset/css/bootstrap/bootstrap.min.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('asset/fontawesome/css/all.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('asset/css/common/style.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('build/app.css')}}">
 
     {% block stylesheets %} {% endblock %}
 
@@ -22,7 +20,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
     <div class="container">
-        <a class="navbar-brand" href="/"><img src="{{ asset('asset/images/common/micor-mvc.png') }}" alt="MicroMVC" style="height: 30px;"></a>
+        <a class="navbar-brand" href="/"><img src="{{ asset('build/images/micor-mvc.png') }}" alt="MicroMVC" style="height: 30px;"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
                 aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -55,7 +53,7 @@
 </footer>
 
 
-<script src="{{ asset('asset/js/bootstrap/bootstrap.js') }}"></script>
+<script src="{{ asset('build/app.js') }}"></script>
 
 </body>
 </html>
