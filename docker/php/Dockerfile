@@ -44,7 +44,7 @@ RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && echo ${TIMEZONE} >
 RUN echo 'alias composer="XDEBUG_MODE=off composer"' >> ~/.bashrc
 
 # Install Node.js
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && npm install --global yarn \
     && apt-get clean \

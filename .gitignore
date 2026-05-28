@@ -10,3 +10,7 @@
 .vscode/
 .vs/
 ###> visualstudio ###
+###> webpack ###
+/node_modules/
+/public/build/
+###> webpack ###

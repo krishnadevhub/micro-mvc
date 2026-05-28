@@ -19,25 +19,29 @@ use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Loader\FilesystemLoader;
 
+/**
+ * Base controller providing Twig template rendering for all controllers.
+ *
+ * @package App\Controller
+ */
 abstract class AbstractController
 {
     /**
-     * Render a view template using Twig
+     * Renders a view template using Twig.
      *
-     * @param string $template The template file
-     * @param array $args Associative array of data to display in the view (optional)
-     *
+     * @param string $template The template file path relative to the templates directory
+     * @param array<string, mixed> $args Associative array of data to pass to the template
      * @return void
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
+     * @throws LoaderError If the template cannot be found
+     * @throws RuntimeError If a runtime error occurs during rendering
+     * @throws SyntaxError If there is a syntax error in the template
      */
     public function render(string $template, array $args = []): void
     {
         static $twig = null;
 
         if ($twig === null) {
-            $loader = new FilesystemLoader(__DIR__.'/../../templates');
+            $loader = new FilesystemLoader(__DIR__ . '/../../templates');
             $twig = new Environment($loader, [
                 'cache' => CACHE_PATH,
                 'debug' => Application::isDevelopment(),

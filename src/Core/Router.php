@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use App\Service\AppLogger;
+use RuntimeException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,13 +14,31 @@ use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Router as SymfonyRouter;
 
+/**
+ * Resolves incoming HTTP requests to controller actions using YAML route definitions.
+ *
+ * @package App\Core
+ */
 class Router
 {
+    /**
+     * @param Container $container The compiled dependency injection container
+     */
     public function __construct(
         private readonly Container $container
-    ) { }
+    ) {
+    }
 
+    /**
+     * Matches the current request against defined routes and dispatches to the appropriate controller.
+     *
+     * @return void
+     * @throws MethodNotAllowedException If the HTTP method is not allowed for the matched route
+     * @throws ResourceNotFoundException If no route matches the request
+     * @throws RuntimeException If the controller format is invalid
+     */
     public function resolve(): void
     {
         $context = new RequestContext();
@@ -27,7 +46,7 @@ class Router
 
         try {
             $fileLocator = new FileLocator([CONFIG_PATH]);
-            $router = new \Symfony\Component\Routing\Router(
+            $router = new SymfonyRouter(
                 new YamlFileLoader($fileLocator),
                 'routes.yaml',
                 ['cache_dir' => CACHE_PATH],
@@ -39,7 +58,7 @@ class Router
             $controllerParts = explode('::', $matcher['_controller']);
 
             if (count($controllerParts) !== 2) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     sprintf('Invalid controller format "%s". Expected "Class::method".', $matcher['_controller'])
                 );
             }

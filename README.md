@@ -11,6 +11,7 @@ A lightweight MVC framework built with PHP 8.4 and Symfony components, container
 - **Logging** - Structured application logging via Monolog
 - **Database Migrations** - Phinx migration support for schema versioning
 - **Environment Configuration** - `.env`-based configuration via Symfony Dotenv
+- **Asset Bundling** - Webpack 5 for CSS, JavaScript, font, and image bundling
 
 ## Tech Stack
 
@@ -20,8 +21,8 @@ A lightweight MVC framework built with PHP 8.4 and Symfony components, container
 | Nginx       | Latest         |
 | MariaDB     | 10.6.7         |
 | Composer    | Latest         |
-| Node.js     | 18.x           |
-| Yarn        | Latest         |
+| Node.js     | 22.x           |
+| Webpack     | 5.x            |
 
 ### Symfony Packages (v8.0)
 
@@ -53,9 +54,14 @@ A lightweight MVC framework built with PHP 8.4 and Symfony components, container
 ├── docker/
 │   ├── nginx/               # Nginx Dockerfile and config
 │   └── php/                 # PHP-FPM Dockerfile, php.ini, xdebug config
+├── assets/                     # Source assets (pre-build)
+│   ├── css/                  # CSS source files (Bootstrap, custom styles)
+│   ├── fontawesome/          # FontAwesome library
+│   ├── images/               # Source images
+│   └── js/                   # JS source files (Bootstrap, jQuery)
 ├── public/
-│   ├── index.php            # Application entry point
-│   └── asset/               # Static assets (images, CSS, JS)
+│   ├── build/                # Webpack output (generated, gitignored)
+│   └── index.php             # Application entry point
 ├── src/
 │   ├── Application.php      # Bootstrap, environment setup, path constants
 │   ├── Controller/          # Route controllers extending AbstractController
@@ -67,7 +73,9 @@ A lightweight MVC framework built with PHP 8.4 and Symfony components, container
 ├── templates/               # Twig templates
 ├── composer.json
 ├── docker-compose.yml
-└── phinx.json               # Migration configuration
+├── package.json              # Node.js dependencies and build scripts
+├── webpack.config.js         # Webpack bundling configuration
+└── phinx.json                # Migration configuration
 ```
 
 ## Setup
@@ -104,7 +112,40 @@ Supported `APP_ENV` values: `dev`, `development`, `prod`, `production`
 
 ```bash
 docker exec -it micro-mvc-php-container composer install
+docker exec -it micro-mvc-php-container npm install
 ```
+
+### Build Assets
+
+Webpack is used to bundle CSS, JavaScript, fonts, and images into the `public/build/` directory.
+
+**Development build** (with source maps):
+
+```bash
+docker exec -it micro-mvc-php-container npm run dev
+```
+
+**Watch mode** (auto-rebuild on file changes):
+
+```bash
+docker exec -it micro-mvc-php-container npm run watch
+```
+
+**Production build** (minified):
+
+```bash
+docker exec -it micro-mvc-php-container npm run build
+```
+
+The build outputs the following to `public/build/`:
+
+| File              | Description                                      |
+|-------------------|--------------------------------------------------|
+| `app.css`         | Bundled Bootstrap + FontAwesome + custom CSS      |
+| `app.js`          | Bundled Bootstrap JS (includes Popper.js)         |
+| `fonts/`          | FontAwesome webfont files                         |
+| `images/`         | Copied image assets (favicon, logo)               |
+| `manifest.json`   | Asset manifest for programmatic lookups           |
 
 ### Run Database Migrations
 
