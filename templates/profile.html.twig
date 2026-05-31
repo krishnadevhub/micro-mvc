@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+<div class="container" style="margin-top: 80px;">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-center mb-4">My Profile</h3>
+
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <th>First Name</th>
+                                <td>{{ user.first_name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Surname</th>
+                                <td>{{ user.surname }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <a href="{{ path('logout') }}" class="btn btn-outline-danger w-100">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

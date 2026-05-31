@@ -8,6 +8,18 @@ product:
     defaults: { _controller: 'App\Controller\ProductController::showAction' }
     requirements: { id: '[0-9]+', sid: '[0-9]+' }
 
-pdo-gen:
-    path: /pdo-gen
-    defaults: { _controller: 'App\Controller\PdoEntityGeneratorController::indexAction'}
+login:
+    path: /login
+    defaults: { _controller: 'App\Controller\AuthController::loginAction' }
+
+register:
+    path: /register
+    defaults: { _controller: 'App\Controller\AuthController::registerAction' }
+
+logout:
+    path: /logout
+    defaults: { _controller: 'App\Controller\AuthController::logoutAction' }
+
+profile:
+    path: /profile
+    defaults: { _controller: 'App\Controller\ProfileController::indexAction' }

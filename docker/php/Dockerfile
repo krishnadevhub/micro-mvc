@@ -9,7 +9,8 @@ ARG TIMEZONE=Asia/Kuala_Lumpur
 ENV APP_HOME=/var/www/html
 ENV USERNAME=www-data
 
-# Install system dependencies
+# Install system dependencies and PHP extensions in a single layer
+# to ensure dev headers are available during compilation
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         zlib1g-dev \
@@ -21,13 +22,12 @@ RUN apt-get update \
         curl \
         wget \
         nano \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install intl pdo pdo_mysql zip \
+    && pecl install apcu xdebug \
+    && docker-php-ext-enable apcu xdebug \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions (opcache is bundled in php:8.4-fpm)
-RUN docker-php-ext-install intl pdo pdo_mysql zip \
-    && pecl install apcu xdebug \
-    && docker-php-ext-enable apcu xdebug
 
 # Copy PHP configuration
 COPY php/php.ini /usr/local/etc/php/conf.d/
