@@ -1,0 +1,16 @@
+# PDO Entity Generator Configuration
+# Update with your database credentials
+
+database:
+    host: database
+    port: 3306
+    dbname: micromvc
+    username: root
+    password: root
+    driver: mysql
+
+output:
+    entity_namespace: App\Entity
+    repository_namespace: App\Repository
+    entity_directory: src/Entity
+    repository_directory: src/Repository

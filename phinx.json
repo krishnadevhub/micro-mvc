@@ -18,7 +18,7 @@
         "development": {
             "adapter": "mysql",
             "host": "database",
-            "name": "test",
+            "name": "micromvc",
             "user": "root",
             "pass": "root",
             "port": 3306,

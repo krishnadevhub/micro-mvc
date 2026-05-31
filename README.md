@@ -1,12 +1,13 @@
 # MicroMVC - PHP MVC Framework
 
-A lightweight MVC framework built with PHP 8.4 and Symfony components, containerised with Docker.
+A lightweight MVC framework built with PHP 8.4 and Symfony components, containerised with Docker. Includes a session-based authentication system with registration, login, profile, and logout functionality.
 
 ## Features
 
 - **Routing** - YAML-based route configuration via Symfony Routing
 - **Dependency Injection** - Autowired service container using Symfony DependencyInjection with compiled cache
 - **Templating** - Twig templating engine with custom `asset()` and `path()`/`url()` functions
+- **Authentication** - Session-based login/registration with password hashing (`password_hash`/`password_verify`) and session fixation protection (`session_regenerate_id`)
 - **Error Handling** - Whoops pretty error pages in development, custom error pages in production
 - **Logging** - Structured application logging via Monolog
 - **Database Migrations** - Phinx migration support for schema versioning
@@ -39,6 +40,7 @@ A lightweight MVC framework built with PHP 8.4 and Symfony components, container
 - `filp/whoops` - Error handler with pretty stack traces
 - `monolog/monolog` - PSR-3 logging
 - `robmorgan/phinx` - Database migrations
+- `kdevhubin/pdoentitygenerator` - PDO entity and repository class generator
 - `phpstan/phpstan` - Static analysis (dev only)
 
 ## Project Structure
@@ -46,36 +48,54 @@ A lightweight MVC framework built with PHP 8.4 and Symfony components, container
 ```
 .
 ├── config/
-│   ├── routes.yaml          # Route definitions
-│   └── services.yaml        # DI service configuration
+│   ├── pdoentitygenerator.yaml # Database connection config
+│   ├── routes.yaml             # Route definitions
+│   └── services.yaml           # DI service configuration
 ├── db/
-│   ├── migrations/          # Phinx database migrations
-│   └── seeds/               # Phinx database seeders
+│   ├── migrations/             # Phinx database migrations
+│   └── seeds/                  # Phinx database seeders
 ├── docker/
-│   ├── nginx/               # Nginx Dockerfile and config
-│   └── php/                 # PHP-FPM Dockerfile, php.ini, xdebug config
+│   ├── nginx/                  # Nginx Dockerfile and config
+│   └── php/                    # PHP-FPM Dockerfile, php.ini, xdebug config
 ├── assets/                     # Source assets (pre-build)
-│   ├── css/                  # CSS source files (Bootstrap, custom styles)
-│   ├── fontawesome/          # FontAwesome library
-│   ├── images/               # Source images
-│   └── js/                   # JS source files (Bootstrap, jQuery)
+│   ├── css/                    # CSS source files (Bootstrap, custom styles)
+│   ├── fontawesome/            # FontAwesome library
+│   ├── images/                 # Source images
+│   └── js/                     # JS source files (Bootstrap, jQuery)
 ├── public/
-│   ├── build/                # Webpack output (generated, gitignored)
-│   └── index.php             # Application entry point
+│   ├── build/                  # Webpack output (generated, gitignored)
+│   └── index.php               # Application entry point
 ├── src/
-│   ├── Application.php      # Bootstrap, environment setup, path constants
-│   ├── Controller/          # Route controllers extending AbstractController
+│   ├── Application.php         # Bootstrap, environment setup, path constants
+│   ├── Controller/
+│   │   ├── AbstractController.php  # Base controller with Twig rendering
+│   │   ├── AuthController.php      # Login, registration, and logout
+│   │   ├── HomeController.php      # Homepage
+│   │   ├── ProductController.php   # Product display
+│   │   └── ProfileController.php   # User profile (authenticated)
 │   ├── Core/
-│   │   ├── AppContainer.php # Compiled DI container with caching
-│   │   ├── Router.php       # Request-to-controller resolver
-│   │   └── Twig/            # Custom Twig extensions (asset, routing)
-│   └── Service/             # Application services (logger, business logic)
-├── templates/               # Twig templates
+│   │   ├── AppContainer.php    # Compiled DI container with caching
+│   │   ├── Router.php          # Request-to-controller resolver
+│   │   └── Twig/               # Custom Twig extensions (asset, routing)
+│   ├── Entity/
+│   │   ├── Employee.php        # Employee entity
+│   │   └── User.php            # User entity (DateTimeImmutable timestamps)
+│   ├── Factory/
+│   │   └── PdoFactory.php      # PDO connection factory (singleton)
+│   ├── Repository/
+│   │   ├── EmployeeRepository.php  # Employee data access
+│   │   └── UserRepository.php      # User data access (find, insert, update)
+│   └── Service/                # Application services (logger, business logic)
+├── templates/                  # Twig templates
+│   ├── base.html.twig          # Base layout with conditional navbar
+│   ├── login.html.twig         # Login form
+│   ├── register.html.twig      # Registration form
+│   └── profile.html.twig       # User profile page
 ├── composer.json
 ├── docker-compose.yml
-├── package.json              # Node.js dependencies and build scripts
-├── webpack.config.js         # Webpack bundling configuration
-└── phinx.json                # Migration configuration
+├── package.json                # Node.js dependencies and build scripts
+├── webpack.config.js           # Webpack bundling configuration
+└── phinx.json                  # Migration configuration
 ```
 
 ## Setup
@@ -162,11 +182,24 @@ docker exec -it micro-mvc-php-container vendor/bin/phinx migrate
 
 ## Routes
 
-| Name       | Path                           | Controller                                    |
-|------------|--------------------------------|-----------------------------------------------|
-| homepage   | `/`                            | `HomeController::indexAction`                  |
-| product    | `/product/id/{id}/sid/{sid}`   | `ProductController::showAction`                |
-| pdo-gen    | `/pdo-gen`                     | `PdoEntityGeneratorController::indexAction`    |
+| Name       | Path                           | Controller                         |
+|------------|--------------------------------|------------------------------------|
+| homepage   | `/`                            | `HomeController::indexAction`      |
+| product    | `/product/id/{id}/sid/{sid}`   | `ProductController::showAction`    |
+| login      | `/login`                       | `AuthController::loginAction`      |
+| register   | `/register`                    | `AuthController::registerAction`   |
+| logout     | `/logout`                      | `AuthController::logoutAction`     |
+| profile    | `/profile`                     | `ProfileController::indexAction`   |
+
+## Authentication
+
+The application includes a session-based authentication system:
+
+- **Registration** (`/register`) - Creates a new account with server-side validation (required fields, email format, minimum 8-character password). Passwords are hashed using `password_hash()` with `PASSWORD_DEFAULT` (bcrypt).
+- **Login** (`/login`) - Verifies credentials with `password_verify()` and regenerates the session ID to prevent session fixation attacks.
+- **Profile** (`/profile`) - Displays the logged-in user's details. Unauthenticated users are redirected to the login page.
+- **Logout** (`/logout`) - Clears session data, removes the session cookie, and destroys the session.
+- **Conditional Navbar** - The navigation bar dynamically shows "Login" for guests or "Profile" and "Logout" for authenticated users.
 
 ## Docker Services
 

@@ -54,7 +54,7 @@ abstract class AbstractController
             $router = new Router(
                 new YamlFileLoader($fileLocator),
                 'routes.yaml',
-                ['cache_dir' => CACHE_PATH],
+                ['cache_dir' => CACHE_PATH, 'debug' => Application::isDevelopment()],
                 $context
             );
 
@@ -63,6 +63,12 @@ abstract class AbstractController
             $twig->addExtension(new AssetExtension());
             $twig->addExtension(new RoutingExtension($generator));
         }
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        $args['session_user'] = $_SESSION['user'] ?? null;
 
         echo $twig->render($template, $args);
     }

@@ -1,5 +1,4 @@
-# TRS REST Services – Structural Code Review Report
-**Branch:** `test-micro`
+# Structural Code Review Report
 
 ---
 

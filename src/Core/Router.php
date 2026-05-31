@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Core;
 
+use App\Application;
 use App\Service\AppLogger;
 use RuntimeException;
 use Symfony\Component\Config\FileLocator;
@@ -49,7 +50,7 @@ class Router
             $router = new SymfonyRouter(
                 new YamlFileLoader($fileLocator),
                 'routes.yaml',
-                ['cache_dir' => CACHE_PATH],
+                ['cache_dir' => CACHE_PATH, 'debug' => Application::isDevelopment()],
                 $context
             );
 

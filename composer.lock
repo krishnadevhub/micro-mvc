@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a10e423900c47b9d1fe52b151f1a08cb",
+    "content-hash": "b8eb8fc34c6f151fb0457da79cc31e39",
     "packages": [
         {
             "name": "cakephp/chronos",
@@ -400,6 +400,54 @@
                 }
             ],
             "time": "2025-08-08T12:00:00+00:00"
+        },
+        {
+            "name": "kdevhubin/pdoentitygenerator",
+            "version": "v1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/krishnadevhub/pdo-entity-generator.git",
+                "reference": "af8d078330b3a0a83a1d77d882046634b9bc021d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/krishnadevhub/pdo-entity-generator/zipball/af8d078330b3a0a83a1d77d882046634b9bc021d",
+                "reference": "af8d078330b3a0a83a1d77d882046634b9bc021d",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^2.0",
+                "ext-pdo": "*",
+                "php": ">=8.4",
+                "symfony/yaml": "^8.0"
+            },
+            "bin": [
+                "bin/pdoentitygenerator"
+            ],
+            "type": "composer-plugin",
+            "extra": {
+                "class": "kdevhub\\PdoEntityGenerator\\Composer\\PostInstallHandler"
+            },
+            "autoload": {
+                "psr-4": {
+                    "kdevhub\\PdoEntityGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Krishnamoorthy Velautham"
+                }
+            ],
+            "description": "CLI tool to generate PHP PDO Entity and Repository classes from database tables",
+            "support": {
+                "issues": "https://github.com/krishnadevhub/pdo-entity-generator/issues",
+                "source": "https://github.com/krishnadevhub/pdo-entity-generator/tree/v1.6"
+            },
+            "time": "2026-05-30T16:49:10+00:00"
         },
         {
             "name": "league/container",
@@ -2445,7 +2493,9 @@
     "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": {},
+    "platform": {
+        "php": ">=8.4"
+    },
     "platform-dev": {},
     "plugin-api-version": "2.9.0"
 }
